@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Management System</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 960px; margin: 30px auto; }
+    input { padding: 6px; margin: 4px 0; width: 280px; }
+    .err { color: red; font-size: 13px; }
+    .ok { background: #d4edda; color: #155724; padding: 8px; margin-bottom: 10px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background: #333; color: #fff; }
+    .inline { display: inline; }
+  </style>
+</head>
+<body>
+  <h1>Employee Management System</h1>
+  <div class="ok" th:if="${message}" th:text="${message}"></div>
+
+  <form th:action="@{/employees}" th:object="${employee}" method="post">
+    <div><input th:field="*{fullName}" placeholder="Full name">
+      <div class="err" th:errors="*{fullName}"></div></div>
+    <div><input th:field="*{email}" placeholder="Email">
+      <div class="err" th:errors="*{email}"></div></div>
+    <div><input th:field="*{phone}" placeholder="Phone (10 digits)">
+      <div class="err" th:errors="*{phone}"></div></div>
+    <div><input th:field="*{department}" placeholder="Department">
+      <div class="err" th:errors="*{department}"></div></div>
+    <div><input th:field="*{salary}" type="number" step="0.01" placeholder="Salary">
+      <div class="err" th:errors="*{salary}"></div></div>
+    <button type="submit">Save Employee</button>
+  </form>
+
+  <form th:action="@{/employees}" method="get" style="margin-top:20px">
+    <input name="keyword" th:value="${keyword}" placeholder="Search by name">
+    <button type="submit">Search</button>
+  </form>
+
+  <p>Total employees: <b th:text="${#lists.size(employees)}">0</b></p>
+  <table>
+    <tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Department</th><th>Salary</th><th>Actions</th></tr>
+    <tr th:each="e : ${employees}">
+      <td th:text="${e.id}"></td>
+      <td th:text="${e.fullName}"></td>
+      <td th:text="${e.email}"></td>
+      <td th:text="${e.phone}"></td>
+      <td th:text="${e.department}"></td>
+      <td th:text="${e.salary}"></td>
+      <td>
+        <a th:href="@{/employees/{id}/edit(id=${e.id})}">Edit</a>
+        <form class="inline" th:action="@{/employees/{id}/delete(id=${e.id})}" method="post"
+              onsubmit="return confirm('Delete this employee?');">
+          <button type="submit">Delete</button>
+        </form>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
